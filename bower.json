@@ -1,0 +1,23 @@
+{
+  "name": "jquery-plusmore",
+  "version": "1.0.0",
+  "homepage": "https://github.com/Traackr/jquery-plusmore",
+  "authors": [
+    "Luis A. Cruz <lcruz+github@traackr.com>",
+    "Paul Kist <pkist+github@traackr.com>"
+  ],
+  "description": "A jQuery plugin for collapsing a list down into a \"+ X more\" format.",
+  "main": "src/jquery.plusmore.js",
+  "keywords": [
+    "jquery",
+    "plugin",
+    "list"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*"
+  ],
+  "dependencies": {
+    "jquery": ">= 1.6.4"
+  }
+}

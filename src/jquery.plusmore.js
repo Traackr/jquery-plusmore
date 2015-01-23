@@ -78,7 +78,7 @@
 
          if(opts.show < list.length) {
             var hiddenItems = list.slice(opts.show);
-            formatList(hiddenItems);
+            _formatList(hiddenItems);
             /*
              * Event handlers
              */
@@ -89,12 +89,15 @@
             });
             
             $(this).on('plusmore.formatList', function(ev,data) {
-               formatList(hiddenItems);
+               _formatList(hiddenItems);
             });
          }
       });
 
-      function formatList(hiddenItems) {
+      /*
+       * Private functions
+       */
+      function _formatList(hiddenItems) {
          hiddenItems.addClass(opts.hiddenClass);
          if ($.isFunction(opts.formatList)) {
             opts.formatList(hiddenItems);

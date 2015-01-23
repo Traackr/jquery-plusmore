@@ -59,20 +59,47 @@
  *    showMore:
  *       Callback function to setup handling the interaction with the "+ X more" item
  *       Defaults to showing the remainder of the list when the "+ X more" item is clicked
+ *
+ *  Events:
+ *     plusmore.showMore:
+ *        By triggering this event, the caller can programatically run the showMore function on the target element.
+ *
+ *     plusmore.formatList:
+ *        By triggering this event, the caller can programatically  run the formatList function on the target element.
  */
 (function( $ ) {
+
    $.fn.plusmore = function( options ) {
       var opts = $.extend( {}, $.fn.plusmore.defaults, options );
 
       return this.each(function() {
-         var list = $(this).find(opts.itemSelector);
+         var self = this,
+             list = $(this).find(opts.itemSelector);
+
          if(opts.show < list.length) {
-            var hiddenItems = list.slice(opts.show).addClass(opts.hiddenClass);
-            if ($.isFunction(opts.formatList)) {
-               opts.formatList(hiddenItems);
-            }
+            var hiddenItems = list.slice(opts.show);
+            formatList(hiddenItems);
+            /*
+             * Event handlers
+             */
+            $(this).on('plusmore.showMore', function(ev,data) {
+               var event = jQuery.Event;
+               event.data = { hiddenItems : hiddenItems, hiddenClass : opts.hiddenClass };
+               opts.showMore.apply($(self).find('.'+opts.moreItemsClass), [event]);
+            });
+            
+            $(this).on('plusmore.formatList', function(ev,data) {
+               formatList(hiddenItems);
+            });
          }
       });
+
+      function formatList(hiddenItems) {
+         hiddenItems.addClass(opts.hiddenClass);
+         if ($.isFunction(opts.formatList)) {
+            opts.formatList(hiddenItems);
+         }         
+      }
    };
 
    $.fn.plusmore.defaults = {
@@ -92,9 +119,10 @@
       },
 
       showMore: function(event) {
-         $(this).hide();
+         $(this).remove();
          event.data.hiddenItems.removeClass(event.data.hiddenClass);
          return false;
       }
    };
+
 })( jQuery );

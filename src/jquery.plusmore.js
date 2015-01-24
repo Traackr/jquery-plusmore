@@ -63,6 +63,8 @@
  *  Events:
  *     plusmore.showMore:
  *        By triggering this event, the caller can programatically run the showMore function on the target element.
+ *        Note: when triggering showMore, the function is executed within the context of the classname configured by 
+ *        moreItemsClass
  *
  *     plusmore.formatList:
  *        By triggering this event, the caller can programatically  run the formatList function on the target element.
@@ -82,9 +84,10 @@
             /*
              * Event handlers
              */
-            $(this).on('plusmore.showMore', function(ev,data) {
+            $(this).on('plusmore.showMore', function(ev, data) {
                var event = jQuery.Event;
                event.data = { hiddenItems : hiddenItems, hiddenClass : opts.hiddenClass };
+               // Apply the showMore function to the context of the moreItemsClass element
                opts.showMore.apply($(self).find('.'+opts.moreItemsClass), [event]);
             });
             
@@ -116,7 +119,7 @@
       formatList: function(hiddenItems) {
          var firstHiddenItem = hiddenItems.first();
          var moreItem = firstHiddenItem.clone();
-         moreItem.removeClass(this.hiddenClass).html(" <a class=\"" + this.moreItemsClass + "\" href=\"#\">+ " + hiddenItems.length + " more</a>");
+         moreItem.removeClass(this.hiddenClass).addClass(this.moreItemsClass).html(" <a href=\"#\">+ " + hiddenItems.length + " more</a>");
          moreItem.click({hiddenItems: hiddenItems, hiddenClass: this.hiddenClass}, this.showMore);
          firstHiddenItem.before(moreItem);
       },

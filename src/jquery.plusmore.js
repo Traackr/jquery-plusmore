@@ -1,6 +1,6 @@
 /**
  * jQuery Plugin - Plus More
- * Version: 1.0.0
+ * Version: 2.0.0
  *
  * Contributor(s):
  *    Luis A. Cruz <lcruz+github@traackr.com>

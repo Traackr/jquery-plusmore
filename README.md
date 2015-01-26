@@ -3,7 +3,7 @@ A jQuery plugin for collapsing a list down into a "+ X more" format.
 
 ## Installation Via bower
 
-	bower --save install jquery-plusmore
+    bower --save install jquery-plusmore
 
 ## Usage
 
@@ -100,6 +100,50 @@ Available Options:
 		</tr>
 	</tbody>
 </table>
+
+## Events
+
+You can trigger `plusmore` functionality by triggering events on the same element you ran the plugin on. So for example, let's say you did the following:
+
+    $('.plusmore').plusmore( { itemSelector: ".list-item", show: 5 } );
+
+
+You can programatically cause a plusmore action by triggering one of the pre-defined events.
+
+    // This will expand your list
+    $('.plusmore').trigger('plusmore.showMore');
+    
+    // This will collapse your list
+    $('.plusmore').trigger('plusmore.formatList');
+    
+
+Available Events:
+
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+            <th>Description</th>
+            <th>Required Data</th>
+			<th>Dependencies</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><code>plusmore.showMore</code></td>
+			<td>Expands the list nested in the element this event is      triggered on.  This will apply the callback function defined in <code>options.showMore</code> to the context of the element with the class defined by <code>moreItemsClass</code>.</td>
+            <td>N/A</td>
+            <td>Requires the list to be already collapsed, and that an element exists on the same level as your list items, having the classname as defined by <code>moreItemsClass</code>.</td>
+		</tr>
+    	<tr>
+			<td><code>plusmore.formatList</code></td>
+			<td>Collapses the list nested in the element this event is      triggered on.  This will run the function defined in <code>options.formatList</code>.</td>
+            <td>N/A</td>
+            <td>Requires the list to be already expanded.</td>
+		</tr>
+	</tbody>
+</table>
+
 
 ## License
 

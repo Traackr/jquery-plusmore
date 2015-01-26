@@ -1,6 +1,6 @@
 /**
  * jQuery Plugin - Plus More
- * Version: 1.0.0
+ * Version: 2.0.0
  *
  * Contributor(s):
  *    Luis A. Cruz <lcruz+github@traackr.com>
@@ -59,20 +59,53 @@
  *    showMore:
  *       Callback function to setup handling the interaction with the "+ X more" item
  *       Defaults to showing the remainder of the list when the "+ X more" item is clicked
+ *
+ *  Events:
+ *     plusmore.showMore:
+ *        By triggering this event, the caller can programatically run the showMore function on the target element.
+ *        Note: when triggering showMore, the function is executed within the context of the classname configured by 
+ *        moreItemsClass
+ *
+ *     plusmore.formatList:
+ *        By triggering this event, the caller can programatically  run the formatList function on the target element.
  */
 (function( $ ) {
+
    $.fn.plusmore = function( options ) {
       var opts = $.extend( {}, $.fn.plusmore.defaults, options );
 
       return this.each(function() {
-         var list = $(this).find(opts.itemSelector);
+         var self = this,
+             list = $(this).find(opts.itemSelector);
+
          if(opts.show < list.length) {
-            var hiddenItems = list.slice(opts.show).addClass(opts.hiddenClass);
-            if ($.isFunction(opts.formatList)) {
-               opts.formatList(hiddenItems);
-            }
+            var hiddenItems = list.slice(opts.show);
+            _formatList(hiddenItems);
+            /*
+             * Event handlers
+             */
+            $(this).on('plusmore.showMore', function(ev, data) {
+               var event = jQuery.Event;
+               event.data = { hiddenItems : hiddenItems, hiddenClass : opts.hiddenClass };
+               // Apply the showMore function to the context of the moreItemsClass element
+               opts.showMore.apply($(self).find('.'+opts.moreItemsClass), [event]);
+            });
+            
+            $(this).on('plusmore.formatList', function(ev,data) {
+               _formatList(hiddenItems);
+            });
          }
       });
+
+      /*
+       * Private functions
+       */
+      function _formatList(hiddenItems) {
+         hiddenItems.addClass(opts.hiddenClass);
+         if ($.isFunction(opts.formatList)) {
+            opts.formatList(hiddenItems);
+         }         
+      }
    };
 
    $.fn.plusmore.defaults = {
@@ -86,15 +119,16 @@
       formatList: function(hiddenItems) {
          var firstHiddenItem = hiddenItems.first();
          var moreItem = firstHiddenItem.clone();
-         moreItem.removeClass(this.hiddenClass).html(" <a class=\"" + this.moreItemsClass + "\" href=\"#\">+ " + hiddenItems.length + " more</a>");
+         moreItem.removeClass(this.hiddenClass).addClass(this.moreItemsClass).html(" <a href=\"#\">+ " + hiddenItems.length + " more</a>");
          moreItem.click({hiddenItems: hiddenItems, hiddenClass: this.hiddenClass}, this.showMore);
          firstHiddenItem.before(moreItem);
       },
 
       showMore: function(event) {
-         $(this).hide();
+         $(this).remove();
          event.data.hiddenItems.removeClass(event.data.hiddenClass);
          return false;
       }
    };
+
 })( jQuery );
